@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOTIF — Motion from Imagined Footage</title>
+<style>
+  :root{ --bg:#eaeff7; --ink:#2b3445; --soft:#4a5468; --muted:#7b869a;
+         --blue:#2a78d6; --orange:#d9481c; --card:#ffffff; --line:#d3dbe7; }
+  *{ box-sizing:border-box }
+  body{ margin:0; background:var(--bg); color:var(--ink);
+        font-family:"Plus Jakarta Sans","Segoe UI",system-ui,Helvetica,sans-serif; line-height:1.5 }
+  .mono{ font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace }
+  main{ max-width:1200px; margin:0 auto; padding:48px 20px 90px }
+  h1{ font-size:clamp(2rem,5vw,3.2rem); letter-spacing:-0.02em; line-height:1.05; margin:.2em 0 }
+  h2{ font-size:1.5rem; letter-spacing:-0.01em; margin:2.6em 0 .7em }
+  .sub{ font-size:1.15rem; color:var(--soft); max-width:64ch }
+  .accent-gt{ color:var(--orange); font-weight:700 } .accent-m{ color:var(--blue); font-weight:700 }
+  .card{ background:var(--card); border:3px solid var(--ink); border-radius:18px;
+         box-shadow:8px 8px 0 #cfe8f9; overflow:hidden }
+  .grid{ display:grid; gap:26px; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)) }
+  .vid video{ display:block; width:100%; height:auto; background:#000 }
+  .vid .cap{ padding:12px 16px; font-size:.95rem }
+  .vid .cap b{ letter-spacing:-0.01em }
+  .vid .cap .mono{ font-size:.8rem; color:var(--muted) }
+  .hero{ box-shadow:8px 8px 0 #fdeec2 }
+  .numbers{ display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); margin:1.2em 0 }
+  .num{ background:var(--card); border:3px solid var(--ink); border-radius:18px; padding:18px 20px;
+        box-shadow:8px 8px 0 #f9d7d3 }
+  .num .v{ font-size:2.1rem; font-weight:800; letter-spacing:-0.02em }
+  .num .l{ font-size:.9rem; color:var(--soft) }
+  .figs{ display:grid; gap:26px; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)) }
+  .figs img{ display:block; width:100%; height:auto; background:#fff }
+  footer{ margin-top:70px; padding-top:18px; border-top:3px solid var(--line);
+          font-size:.9rem; color:var(--muted) }
+  a{ color:var(--blue) }
+</style>
+</head>
+<body>
+<main>
+  <p class="mono" style="color:var(--muted); letter-spacing:.12em; text-transform:uppercase; font-size:.8rem">MOTIF · Motion from Imagined Footage</p>
+  <h1>The stage is authored, the camera is known — so generated motion can be measured.</h1>
+  <p class="sub">A prompt becomes a video, the video becomes a body, and the body lands back in the 3D scene it was filmed in — in metres, editable in Blender. In every clip below, <span class="accent-gt">orange is ground truth</span> and <span class="accent-m">blue is the reconstruction</span>.</p>
+
+  <div class="numbers">
+    <div class="num"><div class="v">41&thinsp;mm</div><div class="l">best world error on real captured motion (TRUMANS)</div></div>
+    <div class="num"><div class="v">50&thinsp;mm</div><div class="l">mean, best pipeline arm, 4 real-capture scenes [43, 56]</div></div>
+    <div class="num"><div class="v">31→56→110</div><div class="l">error cascade PA → MPJPE → GPE, procedural corpus (n=8)</div></div>
+    <div class="num"><div class="v">4/4</div><div class="l">self-gate picks the truer arm — without seeing ground truth</div></div>
+  </div>
+
+  <h2>Hero — real captured motion, reconstructed through the authored camera</h2>
+  <div class="card vid hero">
+    <video src="videos/hero_orbit_trumans_walk.mp4" controls loop muted playsinline poster="stills/hero_orbit_walk_41mm.png"></video>
+    <div class="cap"><b>Orbit — 41 mm world error.</b> <span class="mono">reconstruction (blue) vs ground truth (orange ghost) · TRUMANS stand-then-walk</span></div>
+  </div>
+
+  <h2>Showreel</h2>
+  <div class="card vid"><video src="videos/showreel_hq.mp4" controls muted playsinline></video>
+    <div class="cap"><b>All benchmark clips, 2:08.</b> <span class="mono">input video (known camera) | GT vs reconstruction in the authored scene</span></div></div>
+
+  <h2>Four authored worlds — Veo clip in, metric body out</h2>
+  <div class="grid">
+    <div class="card vid"><video src="videos/mainscene_motif_campaign_andy_wave.mp4" controls loop muted playsinline></video><div class="cap"><b>Toon bedroom — wave</b></div></div>
+    <div class="card vid"><video src="videos/mainscene_motif_campaign_spaceship_v8_balance_brace.mp4" controls loop muted playsinline></video><div class="cap"><b>Spaceship cockpit — balance brace</b></div></div>
+    <div class="card vid"><video src="videos/mainscene_motif_kitchen_chef_victory_v1.mp4" controls loop muted playsinline></video><div class="cap"><b>Mediterranean kitchen — chef victory</b></div></div>
+    <div class="card vid"><video src="videos/mainscene_motif_campaign_packing_v03r3_raise_arms.mp4" controls loop muted playsinline></video><div class="cap"><b>Packing studio — raise arms</b></div></div>
+    <div class="card vid"><video src="videos/mainscene_motif_campaign_andy_bed_edge_sit_v4.mp4" controls loop muted playsinline></video><div class="cap"><b>Toon bedroom — walk &amp; sit on the bed</b></div></div>
+    <div class="card vid"><video src="videos/mainscene_motif_pp24_andy_walk_door_rug_v1.mp4" controls loop muted playsinline></video><div class="cap"><b>Toon bedroom — walk door → rug</b> <span class="mono">new batch</span></div></div>
+    <div class="card vid"><video src="videos/mainscene_motif_pp24_andy_crouch_toy_v1.mp4" controls loop muted playsinline></video><div class="cap"><b>Toon bedroom — crouch at the toys</b> <span class="mono">new batch</span></div></div>
+  </div>
+
+  <h2>Measured against known truth — real captured motion (TRUMANS)</h2>
+  <div class="grid">
+    <div class="card vid"><video src="videos/compare_hq_trumans_scene_walk.mp4" controls loop muted playsinline></video><div class="cap"><b>Stand, then walk — GPE 41 mm</b></div></div>
+    <div class="card vid"><video src="videos/compare_hq_trumans_scene_h.mp4" controls loop muted playsinline></video><div class="cap"><b>Session H — GPE 44 mm</b></div></div>
+    <div class="card vid"><video src="videos/compare_hq_trumans_scene_d.mp4" controls loop muted playsinline></video><div class="cap"><b>Kitchen work — GPE 48 mm</b></div></div>
+    <div class="card vid"><video src="videos/duomo_grounded_trumans_scene_walk.mp4" controls loop muted playsinline></video><div class="cap"><b>Grounding step in the scene</b> <span class="mono">working cut</span></div></div>
+  </div>
+
+  <h2>Procedural corpus &amp; details</h2>
+  <div class="grid">
+    <div class="card vid"><video src="videos/compare_hq_pl_dance.mp4" controls loop muted playsinline></video><div class="cap"><b>Dance, in place — GPE 64 mm</b></div></div>
+    <div class="card vid"><video src="videos/compare_hq_pl_slalom.mp4" controls loop muted playsinline></video><div class="cap"><b>Slalom walk — GPE 98 mm</b></div></div>
+    <div class="card vid"><video src="videos/hero_orbit_slalom.mp4" controls loop muted playsinline></video><div class="cap"><b>Slalom orbit</b></div></div>
+    <div class="card vid"><video src="videos/hands_4angles_trumans_scene_c.mp4" controls loop muted playsinline></video><div class="cap"><b>Hand articulation graft — 4 tracking angles</b> <span class="mono">WiLoR fingers, wrist from body track</span></div></div>
+  </div>
+
+  <h2>Figures</h2>
+  <div class="figs">
+    <div class="card"><img src="figures/fig1_error_cascade.png" alt="Error cascade"></div>
+    <div class="card"><img src="figures/fig4_arm_progression.png" alt="Arm progression"></div>
+    <div class="card"><img src="figures/fig8_gate_decisions.png" alt="Gate decisions"></div>
+    <div class="card"><img src="figures/fig7_trumans_showcase.png" alt="All TRUMANS clips"></div>
+    <div class="card"><img src="figures/fig5_timing_sweep.png" alt="Timing sweep"></div>
+  </div>
+
+  <footer>
+    MOTIF — masters&rsquo; thesis project, Christian Gerling · benchmark of 25 Aug 2026 · one recipe for every clip, per-sequence statistics, 95% BCa CIs.<br>
+    Real-capture motion: TRUMANS (Jiang et al., CVPR 2024) replayed through authored cameras — shown here as rendered research results.
+  </footer>
+</main>
+</body>
+</html>
