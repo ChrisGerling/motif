@@ -76,8 +76,10 @@ const MOTIONS = [
   { k:"brace",       label:"balance brace",     room:"ship",    file:"motion_motif_campaign_spaceship_v8_balance_brace.bin.gz" },
   { k:"panel",       label:"crouch at the panel",room:"ship",   file:"motion_motif_pp24_ship_crouch_panel_v1.bin.gz" },
   { k:"raise",       label:"raise arms",        room:"packing", file:"motion_motif_campaign_packing_v03r3_raise_arms.bin.gz" },
+  { k:"apartment",   label:"explore the room",  room:"apartment", roomOnly:true },
 ];
-const ROOMLABEL = { andy:"toon bedroom", kitchen:"kitchen", ship:"cockpit", packing:"packing studio" };
+const ROOMLABEL = { andy:"toon bedroom", kitchen:"kitchen", ship:"cockpit", packing:"packing studio",
+                    apartment:"one-room apartment", campfire:"forest campsite" };
 
 const canvas = document.getElementById("stage");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
@@ -175,6 +177,22 @@ async function selectMotion(m){
   motion = null;
   await loadRoom(m.room);
   if (currentRoom) currentRoom.visible = false;   // erst zeigen, wenn die Kamera steht
+  if (m.roomOnly){
+    // Raum ohne Motion erkunden: kuratierte Kamera (aus dem Agent-Blend), sonst Raumbox
+    const RO_CAM = { apartment:{ pos:[3.05,1.6,2.15], tgt:[0,1.0,0.65] },
+                     campfire: { pos:[6.5,3.2,6.5],  tgt:[0,0.8,0] } };
+    const box = new THREE.Box3().setFromObject(currentRoom);
+    const c = box.getCenter(new THREE.Vector3());
+    const ro = RO_CAM[m.room];
+    if (ro){ controls.target.set(...ro.tgt); camera.position.set(...ro.pos); }
+    else { controls.target.set(c.x, box.min.y + 1.1, c.z);
+           camera.position.set(c.x + 2.1, box.min.y + 1.55, c.z + 2.1); }
+    controls.update();
+    currentRoom.visible = true;
+    frameEl.textContent = "room only";
+    status.textContent = "";
+    return;
+  }
   motion = await loadMotion(m);
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(motion.V*3), 3));
