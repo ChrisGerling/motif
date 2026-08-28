@@ -3,252 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MOTIF — interactive takes</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>MOTIF — under construction</title>
 <style>
-  :root{ --bg:#eaeff7; --ink:#2b3445; --soft:#4a5468; --muted:#7b869a; --blue:#2a78d6; --line:#d3dbe7; }
+  :root{ --bg:#eaeff7; --ink:#2b3445; --soft:#4a5468; --muted:#7b869a; }
   *{ box-sizing:border-box }
-  body{ margin:0; background:var(--bg); color:var(--ink);
-        font-family:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif; }
-  .mono{ font-family:"IBM Plex Mono",ui-monospace,monospace }
-  header{ max-width:1200px; margin:0 auto; padding:22px 20px 10px; display:flex; align-items:baseline; gap:16px; flex-wrap:wrap }
-  header h1{ font-size:1.5rem; margin:0; letter-spacing:-0.01em }
-  header a{ color:var(--blue); text-decoration:none; font-size:.95rem }
-  .wrap{ max-width:1200px; margin:0 auto; padding:0 20px 40px }
-  .stagecard{ background:#fff; border:3px solid var(--ink); border-radius:18px; box-shadow:8px 8px 0 #cfe8f9; overflow:hidden }
-  #stage{ width:100%; height:min(62vh,640px); display:block; background:#dfe7f2; touch-action:none }
-  .bar{ display:flex; align-items:center; gap:14px; padding:12px 16px; border-top:3px solid var(--line); flex-wrap:wrap }
-  button{ font:inherit; background:var(--bg); color:var(--ink); border:2.5px solid var(--ink);
-          border-radius:999px; padding:6px 18px; cursor:pointer; font-weight:600 }
-  button:hover{ background:#dde6f2 }
-  input[type=range]{ flex:1; min-width:140px; accent-color:var(--blue) }
-  .chips{ display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 18px }
-  .chip{ font-family:"IBM Plex Mono",monospace; font-size:.85rem; padding:7px 16px; border-radius:999px;
-         border:2.5px solid var(--ink); background:#fff; cursor:pointer; color:var(--ink) }
-  .chip.active{ background:#fdeec2; border-color:#b7791f }
-  .chip .room{ color:var(--muted) }
-  #status{ font-size:.85rem; color:var(--muted) }
-  .note{ font-size:.9rem; color:var(--soft); margin-top:14px; max-width:70ch }
-  .legend{ font-size:.85rem; color:var(--muted) }
-  .legend b{ color:var(--blue) }
+  body{ margin:0; background:var(--bg); color:var(--ink); min-height:100vh;
+        display:flex; align-items:center; justify-content:center;
+        font-family:"Plus Jakarta Sans","Segoe UI",system-ui,Helvetica,sans-serif; }
+  .card{ background:#fff; border:3px solid var(--ink); border-radius:20px;
+         box-shadow:10px 10px 0 #cfe8f9; padding:56px 64px; max-width:640px; margin:24px; text-align:center }
+  .mono{ font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace }
+  h1{ font-size:2.4rem; letter-spacing:-0.02em; margin:.4em 0 .3em }
+  p{ color:var(--soft); font-size:1.1rem; line-height:1.55; margin:.4em 0 }
+  .kicker{ color:var(--muted); letter-spacing:.14em; text-transform:uppercase; font-size:.8rem }
+  .dot{ display:inline-block; width:10px; height:10px; border-radius:50%; background:#d9481c;
+        margin-right:8px; animation:blink 1.6s infinite }
+  @keyframes blink{ 0%,100%{opacity:.25} 50%{opacity:1} }
 </style>
 </head>
 <body>
-<header>
-  <h1>Interactive takes</h1>
-  <span class="legend"><b>blue body</b> = the delivered reconstruction, orbit freely</span>
-  <a href="../" style="margin-left:auto">&larr; back to the MOTIF page</a>
-</header>
-<div class="wrap">
-  <div class="chips" id="chips"></div>
-  <div class="stagecard">
-    <canvas id="stage"></canvas>
-    <div class="bar">
-      <button id="play">Pause</button>
-      <input type="range" id="scrub" min="0" max="191" value="0" step="1">
-      <span class="mono" id="frame">0 / 0</span>
-      <span class="mono" id="status"></span>
-    </div>
+  <div class="card">
+    <div class="mono kicker">MOTIF · Motion from Imagined Footage</div>
+    <h1>Under construction</h1>
+    <p><span class="dot"></span>New worlds are being built and new takes are being measured
+    right now.</p>
+    <p>The full project page — results, clips, and the interactive 3D takes — will be back
+    here shortly. Check back soon.</p>
   </div>
-  <p class="note">Every clip here is a real pipeline output: a Veo take reconstructed through the
-  authored camera and grounded in the authored room — the same data the videos show, but as live
-  geometry (~20&ndash;95&nbsp;MB per room, loads once). Drag to orbit, scroll to zoom, right-drag to pan.</p>
-</div>
-
-<script type="importmap">
-{ "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-} }
-</script>
-<script type="module">
-import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-
-const MOTIONS = [
-  { k:"andy-walk",   label:"walk door → rug",   room:"andy",    file:"motion_motif_pp24_andy_walk_door_rug_v1.bin.gz" },
-  { k:"andy-crouch", label:"crouch at the toys",room:"andy",    file:"motion_motif_pp24_andy_crouch_toy_v1.bin.gz" },
-  { k:"andy-wave",   label:"wave",              room:"andy",    file:"motion_motif_campaign_andy_wave.bin.gz" },
-  { k:"chef",        label:"chef victory",      room:"kitchen", file:"motion_motif_kitchen_chef_victory_v1.bin.gz" },
-  { k:"island",      label:"walk to the island",room:"kitchen", file:"motion_motif_pp24_kitchen_walk_island_v1.bin.gz" },
-  { k:"brace",       label:"balance brace",     room:"ship",    file:"motion_motif_campaign_spaceship_v8_balance_brace.bin.gz" },
-  { k:"panel",       label:"crouch at the panel",room:"ship",   file:"motion_motif_pp24_ship_crouch_panel_v1.bin.gz" },
-  { k:"raise",       label:"raise arms",        room:"packing", file:"motion_motif_campaign_packing_v03r3_raise_arms.bin.gz" },
-  { k:"brace-turn",  label:"brace &amp; turn",  room:"ship",    file:"motion_motif_pp24_ship_brace_turn_v1.bin.gz" },
-  { k:"pack-wave",   label:"wave",              room:"packing", file:"motion_motif_campaign_packing_v03r2_wave.bin.gz" },
-  { k:"andy-raise",  label:"raise arms",        room:"andy",    file:"motion_motif_campaign_andy_raise_arms.bin.gz" },
-  { k:"lib-walk",    label:"walk to the reading table", room:"library", file:"motion_motif_night_library_walk_table_v1.bin.gz" },
-  { k:"lib-reach",   label:"reach for a high shelf",    room:"library", file:"motion_motif_night_library_reach_shelf_v1.bin.gz" },
-  { k:"zen-walk",    label:"walk the veranda",  room:"zen",     file:"motion_motif_night_zen_walk_veranda_v1.bin.gz" },
-  { k:"zen-bow",     label:"bow to the garden", room:"zen",     file:"motion_motif_night_zen_bow_garden_v1.bin.gz" },
-  { k:"apartment",   label:"explore the room",  room:"apartment", roomOnly:true },
-];
-const ROOMLABEL = { andy:"toon bedroom", kitchen:"kitchen", ship:"cockpit", packing:"packing studio",
-                    apartment:"one-room apartment", campfire:"forest campsite", library:"gothic library", zen:"zen garden" };
-
-const canvas = document.getElementById("stage");
-const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xdfe7f2);
-const camera = new THREE.PerspectiveCamera(50, 16/9, 0.05, 100);
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.maxPolarAngle = Math.PI * 0.55;
-controls.minDistance = 0.8; controls.maxDistance = 12;
-
-scene.add(new THREE.HemisphereLight(0xffffff, 0x8898aa, 1.35));
-const sun = new THREE.DirectionalLight(0xffffff, 1.6);
-sun.position.set(3, 6, 2); scene.add(sun);
-const fill = new THREE.DirectionalLight(0xcfe0ff, 0.5);
-fill.position.set(-4, 3, -3); scene.add(fill);
-
-function resize(){
-  const w = canvas.clientWidth, h = canvas.clientHeight;
-  if (canvas.width !== w || canvas.height !== h){
-    renderer.setSize(w, h, false);
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    camera.aspect = w / h; camera.updateProjectionMatrix();
-  }
-}
-new ResizeObserver(resize).observe(canvas);
-
-const status = document.getElementById("status");
-const frameEl = document.getElementById("frame");
-const scrub = document.getElementById("scrub");
-const playBtn = document.getElementById("play");
-
-let roomCache = {}, currentRoom = null, roomKey = "";
-let body = null, motion = null, playing = true, fIdx = 0, acc = 0;
-const FPS = 24;
-
-async function loadRoom(key){
-  if (roomKey === key) return;
-  if (currentRoom){ scene.remove(currentRoom); currentRoom = null; }
-  roomKey = key;
-  if (!roomCache[key]){
-    status.textContent = "loading room…";
-    roomCache[key] = await new Promise((res, rej) =>
-      new GLTFLoader().load(`room_${key}.glb`,
-        g => res(g.scene),
-        ev => { if (ev.total) status.textContent = `room ${Math.round(100*ev.loaded/ev.total)} %`; },
-        rej));
-  }
-  if (roomKey !== key) return;
-  currentRoom = roomCache[key];
-  scene.add(currentRoom);
-}
-
-async function loadMotion(m){
-  status.textContent = "loading motion…";
-  const resp = await fetch(m.file);
-  const ds = new DecompressionStream("gzip");
-  const buf = await new Response(resp.body.pipeThrough(ds)).arrayBuffer();
-  const dv = new DataView(buf);
-  if (String.fromCharCode(dv.getUint8(0),dv.getUint8(1),dv.getUint8(2),dv.getUint8(3)) !== "MVW1")
-    throw new Error("bad magic");
-  const T = dv.getUint32(4, true), V = dv.getUint32(8, true), F = dv.getUint32(12, true);
-  const mn = [dv.getFloat32(16,true), dv.getFloat32(20,true), dv.getFloat32(24,true)];
-  const sc = [dv.getFloat32(28,true), dv.getFloat32(32,true), dv.getFloat32(36,true)];
-  const faces = new Uint32Array(buf, 40, F*3);
-  const q = new Uint16Array(buf, 40 + F*3*4, T*V*3);
-  return { T, V, faces: faces.slice(), q: q.slice(), mn, sc };
-}
-
-function setFrame(i){
-  if (!motion || !body) return;
-  fIdx = ((i % motion.T) + motion.T) % motion.T;
-  const pos = body.geometry.attributes.position.array;
-  const { q, mn, sc, V } = motion;
-  const o = fIdx * V * 3;
-  for (let v = 0; v < V; v++){
-    const x = mn[0] + q[o+v*3  ]/65535*sc[0];
-    const y = mn[1] + q[o+v*3+1]/65535*sc[1];
-    const z = mn[2] + q[o+v*3+2]/65535*sc[2];
-    pos[v*3] = x; pos[v*3+1] = z; pos[v*3+2] = -y;   // Blender Z-up -> glTF Y-up
-  }
-  body.geometry.attributes.position.needsUpdate = true;
-  body.geometry.computeVertexNormals();
-  scrub.value = fIdx;
-  frameEl.textContent = `${fIdx+1} / ${motion.T}`;
-}
-
-async function selectMotion(m){
-  document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c.dataset.k === m.k));
-  history.replaceState(null, "", `?m=${m.k}`);
-  if (body){ scene.remove(body); body.geometry.dispose(); body = null; }
-  motion = null;
-  await loadRoom(m.room);
-  if (currentRoom) currentRoom.visible = false;   // erst zeigen, wenn die Kamera steht
-  if (m.roomOnly){
-    // Raum ohne Motion erkunden: kuratierte Kamera (aus dem Agent-Blend), sonst Raumbox
-    const RO_CAM = { apartment:{ pos:[3.05,1.6,2.15], tgt:[0,1.0,0.65] },
-                     campfire: { pos:[6.5,3.2,6.5],  tgt:[0,0.8,0] } };
-    const box = new THREE.Box3().setFromObject(currentRoom);
-    const c = box.getCenter(new THREE.Vector3());
-    const ro = RO_CAM[m.room];
-    if (ro){ controls.target.set(...ro.tgt); camera.position.set(...ro.pos); }
-    else { controls.target.set(c.x, box.min.y + 1.1, c.z);
-           camera.position.set(c.x + 2.1, box.min.y + 1.55, c.z + 2.1); }
-    controls.update();
-    currentRoom.visible = true;
-    frameEl.textContent = "room only";
-    status.textContent = "";
-    return;
-  }
-  motion = await loadMotion(m);
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(motion.V*3), 3));
-  geo.setIndex(new THREE.BufferAttribute(motion.faces, 1));
-  const mat = new THREE.MeshStandardMaterial({ color:0x2a78d6, roughness:0.55, metalness:0.0 });
-  body = new THREE.Mesh(geo, mat);
-  body.frustumCulled = false;
-  scene.add(body);
-  scrub.max = motion.T - 1;
-  setFrame(0);
-  // Startkamera: die authored Beauty-Kamerapositionen der Poster-Renders, pro Raum
-  // (Blender (x,y,z) -> three (x, z, -y)) — bewiesene Innenraum-Punkte.
-  const CAMPOS = { zen:[2.55,1.55,2.15], library:[2.35,1.65,2.0], andy:[-2.05,1.55,1.8], kitchen:[-3.1,1.55,2.3], ship:[0.55,1.9,1.9], packing:[2.45,1.6,2.05] };
-  const cx = motion.mn[0]+motion.sc[0]/2, cy = motion.mn[1]+motion.sc[1]/2, cz = motion.mn[2]+motion.sc[2]/2;
-  const target = new THREE.Vector3(cx, cz, -cy);
-  const p = CAMPOS[m.room] || [target.x + 2.0, target.y + 0.8, target.z + 2.0];
-  controls.target.copy(target);
-  camera.position.set(p[0], p[1], p[2]);
-  controls.update();
-  if (currentRoom) currentRoom.visible = true;
-  status.textContent = "";
-}
-
-const chipbox = document.getElementById("chips");
-for (const m of MOTIONS){
-  const b = document.createElement("button");
-  b.className = "chip"; b.dataset.k = m.k;
-  b.innerHTML = `${m.label} <span class="room">· ${ROOMLABEL[m.room]}</span>`;
-  b.onclick = () => selectMotion(m).catch(e => status.textContent = String(e));
-  chipbox.appendChild(b);
-}
-playBtn.onclick = () => { playing = !playing; playBtn.textContent = playing ? "Pause" : "Play"; };
-scrub.oninput = () => { playing = false; playBtn.textContent = "Play"; setFrame(+scrub.value); };
-
-let last = performance.now();
-function tick(now){
-  requestAnimationFrame(tick);
-  const dt = (now - last) / 1000; last = now;
-  if (playing && motion){
-    acc += dt * FPS;
-    while (acc >= 1){ acc -= 1; setFrame(fIdx + 1); }
-  }
-  resize(); controls.update(); renderer.render(scene, camera);
-}
-requestAnimationFrame(tick);
-
-const want = new URLSearchParams(location.search).get("m");
-const first = MOTIONS.find(m => m.k === want) || MOTIONS[0];
-selectMotion(first).catch(e => status.textContent = String(e));
-</script>
 </body>
 </html>
