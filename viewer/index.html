@@ -79,10 +79,12 @@ const MOTIONS = [
   { k:"brace-turn",  label:"brace &amp; turn",  room:"ship",    file:"motion_motif_pp24_ship_brace_turn_v1.bin.gz" },
   { k:"pack-wave",   label:"wave",              room:"packing", file:"motion_motif_campaign_packing_v03r2_wave.bin.gz" },
   { k:"andy-raise",  label:"raise arms",        room:"andy",    file:"motion_motif_campaign_andy_raise_arms.bin.gz" },
+  { k:"lib-walk",    label:"walk to the reading table", room:"library", file:"motion_motif_night_library_walk_table_v1.bin.gz" },
+  { k:"lib-reach",   label:"reach for a high shelf",    room:"library", file:"motion_motif_night_library_reach_shelf_v1.bin.gz" },
   { k:"apartment",   label:"explore the room",  room:"apartment", roomOnly:true },
 ];
 const ROOMLABEL = { andy:"toon bedroom", kitchen:"kitchen", ship:"cockpit", packing:"packing studio",
-                    apartment:"one-room apartment", campfire:"forest campsite" };
+                    apartment:"one-room apartment", campfire:"forest campsite", library:"gothic library" };
 
 const canvas = document.getElementById("stage");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
@@ -208,7 +210,7 @@ async function selectMotion(m){
   setFrame(0);
   // Startkamera: die authored Beauty-Kamerapositionen der Poster-Renders, pro Raum
   // (Blender (x,y,z) -> three (x, z, -y)) — bewiesene Innenraum-Punkte.
-  const CAMPOS = { andy:[-2.05,1.55,1.8], kitchen:[-3.1,1.55,2.3], ship:[0.55,1.9,1.9], packing:[2.45,1.6,2.05] };
+  const CAMPOS = { library:[2.35,1.65,2.0], andy:[-2.05,1.55,1.8], kitchen:[-3.1,1.55,2.3], ship:[0.55,1.9,1.9], packing:[2.45,1.6,2.05] };
   const cx = motion.mn[0]+motion.sc[0]/2, cy = motion.mn[1]+motion.sc[1]/2, cz = motion.mn[2]+motion.sc[2]/2;
   const target = new THREE.Vector3(cx, cz, -cy);
   const p = CAMPOS[m.room] || [target.x + 2.0, target.y + 0.8, target.z + 2.0];
